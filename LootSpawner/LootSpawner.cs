@@ -42,7 +42,7 @@ namespace LootSpawner
 
         public override string Author
         {
-            get { return "DreTaX"; }
+            get { return "DreTaX & Salva"; }
         }
 
         public override string Description
