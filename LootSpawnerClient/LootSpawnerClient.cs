@@ -7,6 +7,10 @@ namespace LootSpawnerClient
 {
     public class LootSpawnerClient : RustBuster2016.API.RustBusterPlugin
     {
+        public LootSpawnerGUI LootGUI;
+        public GameObject go;
+        
+
         internal bool Enabled = false;
         internal bool Authorized = false;
         
@@ -27,6 +31,7 @@ namespace LootSpawnerClient
 
         public override void DeInitialize()
         {
+            if (LootGUI != null) UnityEngine.Object.DestroyImmediate(LootGUI);
             Authorized = false;
             RustBuster2016.API.Hooks.OnRustBusterClientConsole -= OnRustBusterClientConsole;
             Enabled = false;
@@ -41,6 +46,8 @@ namespace LootSpawnerClient
                 if (answer == "yes")
                 {
                     Authorized = true;
+                    LootGUI = go.AddComponent<LootSpawnerGUI>();
+                    UnityEngine.Object.DontDestroyOnLoad(LootGUI);
                 }
             }
         }
