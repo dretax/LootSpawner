@@ -22,12 +22,18 @@ namespace LootSpawner
     {
         public IniParser Settings;
         public static int Time = 20;
-        public static Dictionary<LootType, Vector3> LootPositions = new Dictionary<LootType, Vector3>();
+        public static Dictionary<Vector3, LootType> LootPositions = new Dictionary<Vector3, LootType>();
         public Timer LootTimer;
         public bool RustBusterSupport = false;
         public GameObject go;
         public Loot LootClass;
         public static Random Randomizer;
+        public static bool Announce = false;
+        
+        public const string red = "[color #FF0000]";
+        public const string yellow = "[color yellow]";
+        public const string green = "[color green]";
+        public const string orange = "[color #ffa500]";
         
         public override string Name
         {
@@ -55,6 +61,7 @@ namespace LootSpawner
             {
                 File.Create(Path.Combine(ModuleFolder, "Settings.ini")).Dispose();
                 Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
+                Settings.AddSetting("Settings", "Announce", "false");
                 Settings.AddSetting("Settings", "Time", "20");
                 Settings.Save();
             }
@@ -67,10 +74,10 @@ namespace LootSpawner
             {
                 try
                 {
-                    int loottype = int.Parse(x);
                     string data = Settings.GetSetting("Positions", x);
-                    Vector3 v = Util.GetUtil().ConvertStringToVector3(data);
-                    LootPositions[(LootType) loottype] = v;
+                    int loottype = int.Parse(data);
+                    Vector3 v = Util.GetUtil().ConvertStringToVector3(x);
+                    LootPositions[v] = (LootType) loottype;
                 }
                 catch (Exception ex)
                 {
@@ -115,7 +122,7 @@ namespace LootSpawner
                 if (player.Admin)
                 {
                     int num = 0;
-                    foreach (var x in LootPositions.Values)
+                    foreach (var x in LootPositions.Keys)
                     {
                         try
                         {
@@ -148,7 +155,7 @@ namespace LootSpawner
                             int loottype = int.Parse(x);
                             string data = Settings.GetSetting("Positions", x);
                             Vector3 v = Util.GetUtil().ConvertStringToVector3(data);
-                            LootPositions[(LootType) loottype] = v;
+                            LootPositions[v] = (LootType) loottype;
                         }
                         catch (Exception ex)
                         {
@@ -163,12 +170,19 @@ namespace LootSpawner
                 {
                     foreach (var x in LootSpawner.LootPositions.Keys)
                     {
-                        var obj = Util.GetUtil().FindClosestEntity(LootSpawner.LootPositions[x], 1.5f);
+                        var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
                         if (obj != null && obj.Object is LootableObject)
                         {
                             Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
                         }
-                        World.GetWorld().Spawn(LootSpawner.GetPrefab(x), LootSpawner.LootPositions[x]);
+                        var tempvector = x;
+                        tempvector.y = tempvector.y - 1.6f;
+                        World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
+                    }
+
+                    if (Announce)
+                    {
+                        Fougerite.Server.GetServer().Broadcast(orange + " Loot positions are now filled! Go grab them!");
                     }
                     player.Message("Loot positions are now filled!");
                 }
@@ -217,13 +231,11 @@ namespace LootSpawner
         public bool AddSpawnPoint(Fougerite.Player player, string data)
         {
             Vector3 plloc = player.Location;
-            float y = World.GetWorld().GetGround(plloc.x, plloc.y);
-            plloc.y = y;
             int type = 5;
             int.TryParse(data, out type);
             Vector3 findclosestpos = Vector3.zero;
             float currentdist = float.MaxValue;
-            foreach (var x in LootPositions.Values)
+            foreach (var x in LootPositions.Keys)
             {
                 float dist = Vector3.Distance(plloc, x);
                 if (dist < currentdist)
@@ -235,8 +247,8 @@ namespace LootSpawner
 
             if (findclosestpos == Vector3.zero) // If we had no other positions to compare to.
             {
-                LootPositions.Add((LootType) type, plloc);
-                Settings.AddSetting("Positions", type.ToString(), plloc.ToString());
+                LootPositions.Add(plloc, (LootType) type);
+                Settings.AddSetting("Positions", plloc.ToString(), type.ToString());
                 Settings.Save();
                 player.Message("Successfully added spawnpoint for: " + GetPrefab(type));
                 return true;
@@ -245,8 +257,8 @@ namespace LootSpawner
             {
                 if (Vector3.Distance(plloc, findclosestpos) > 2.5f)
                 {
-                    LootPositions.Add((LootType) type, plloc);
-                    Settings.AddSetting("Positions", type.ToString(), plloc.ToString());
+                    LootPositions.Add(plloc, (LootType) type);
+                    Settings.AddSetting("Positions", plloc.ToString(), type.ToString());
                     Settings.Save();
                     player.Message("Successfully added spawnpoint for: " + GetPrefab(type));
                     return true;
@@ -308,12 +320,14 @@ namespace LootSpawner
                 File.Create(Path.Combine(ModuleFolder, "Settings.ini")).Dispose();
                 Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
                 Settings.AddSetting("Settings", "Time", "20");
+                Settings.AddSetting("Settings", "Announce", "false");
                 Settings.Save();
             }
             Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
             try
             {
                 Time = int.Parse(Settings.GetSetting("Settings", "Time"));
+                Announce = Settings.GetBoolSetting("Settings", "Announce");
             }
             catch (Exception ex)
             {

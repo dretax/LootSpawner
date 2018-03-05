@@ -51,10 +51,8 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="KeyBoardListener.cs" />
     <Compile Include="LootSpawnerClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

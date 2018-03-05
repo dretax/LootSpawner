@@ -23,13 +23,19 @@ namespace LootSpawner
 
             foreach (var x in LootSpawner.LootPositions.Keys)
             {
-                var obj = Util.GetUtil().FindClosestEntity(LootSpawner.LootPositions[x], 1.5f);
+                var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
                 if (obj != null && obj.Object is LootableObject)
                 {
                     Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
                 }
                 yield return new WaitForSeconds(1);
-                World.GetWorld().Spawn(LootSpawner.GetPrefab(x), LootSpawner.LootPositions[x]);
+                var tempvector = x;
+                tempvector.y = tempvector.y - 1.6f;
+                World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
+            }
+            if (LootSpawner.Announce)
+            {
+                Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + " Loot positions are now filled! Go grab them!");
             }
             yield return new WaitForSeconds(LootSpawner.Time * 60); // 20mins * 60 = 1800
             StartCoroutine(LoadupLoot());
