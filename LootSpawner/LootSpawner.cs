@@ -157,6 +157,22 @@ namespace LootSpawner
                     }
                 }
             }
+            else if (cmd == "forcespawnloot")
+            {
+                if (player.Admin)
+                {
+                    foreach (var x in LootSpawner.LootPositions.Keys)
+                    {
+                        var obj = Util.GetUtil().FindClosestEntity(LootSpawner.LootPositions[x], 1.5f);
+                        if (obj != null && obj.Object is LootableObject)
+                        {
+                            Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
+                        }
+                        World.GetWorld().Spawn(LootSpawner.GetPrefab(x), LootSpawner.LootPositions[x]);
+                    }
+                    player.Message("Loot positions are now filled!");
+                }
+            }
         }
 
         public void OnModulesLoaded()
