@@ -17,7 +17,7 @@ namespace LootSpawnerClient
 
         public override string Author
         {
-            get { return "DreTaX"; }
+            get { return "DreTaX & Salva"; }
         }
 
         public override Version Version
