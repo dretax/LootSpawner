@@ -121,24 +121,7 @@ namespace LootSpawner
             {
                 if (player.Admin)
                 {
-                    int num = 0;
-                    foreach (var x in LootPositions.Keys)
-                    {
-                        try
-                        {
-                            var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
-                            if (obj != null && obj.Object is LootableObject)
-                            {
-                                Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
-                                num++;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError("[LootSpawner] Error occured: " + ex);
-                        }
-                    }
-                    player.Message(num + " loots were cleaned!");
+                    ClearLoot(player);
                 }
             }
             else if (cmd == "reloadloot")
@@ -168,23 +151,7 @@ namespace LootSpawner
             {
                 if (player.Admin)
                 {
-                    foreach (var x in LootSpawner.LootPositions.Keys)
-                    {
-                        var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
-                        if (obj != null && obj.Object is LootableObject)
-                        {
-                            Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
-                        }
-                        var tempvector = x;
-                        tempvector.y = tempvector.y - 1.6f;
-                        World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
-                    }
-
-                    if (Announce)
-                    {
-                        Fougerite.Server.GetServer().Broadcast(orange + " Loot positions are now filled! Go grab them!");
-                    }
-                    player.Message("Loot positions are now filled!");
+                    SpawnLoots(player);
                 }
             }
         }
@@ -218,6 +185,16 @@ namespace LootSpawner
                     bool b = AddSpawnPoint(user.Player, split[1]);
                     msgc.ReturnMessage = b ? "yes" : "no";
                 }
+                else if (split[0] == "forcespawn")
+                {
+                    SpawnLoots(user.Player);
+                    msgc.ReturnMessage = "done";
+                }
+                else if (split[0] == "forcespawn")
+                {
+                    ClearLoot(user.Player);
+                    msgc.ReturnMessage = "done";
+                }
             }
         }
 
@@ -226,6 +203,49 @@ namespace LootSpawner
             go = new GameObject();
             LootClass = go.AddComponent<Loot>();
             UnityEngine.Object.DontDestroyOnLoad(go);
+        }
+
+        public void ClearLoot(Fougerite.Player player)
+        {
+            int num = 0;
+            foreach (var x in LootPositions.Keys)
+            {
+                try
+                {
+                    var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
+                    if (obj != null && obj.Object is LootableObject)
+                    {
+                        Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
+                        num++;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("[LootSpawner] Error occured: " + ex);
+                }
+            }
+            player.Message(num + " loots were cleaned!");
+        }
+
+        public void SpawnLoots(Fougerite.Player player)
+        {
+            foreach (var x in LootSpawner.LootPositions.Keys)
+            {
+                var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
+                if (obj != null && obj.Object is LootableObject)
+                {
+                    Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
+                }
+                var tempvector = x;
+                tempvector.y = tempvector.y - 1.6f;
+                World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
+            }
+
+            if (Announce)
+            {
+                Fougerite.Server.GetServer().Broadcast(orange + " Loot positions are now filled! Go grab them!");
+            }
+            player.Message("Loot positions are now filled!");
         }
 
         public bool AddSpawnPoint(Fougerite.Player player, string data)
