@@ -29,6 +29,7 @@ namespace LootSpawner
         public Loot LootClass;
         public static Random Randomizer;
         public static bool Announce = false;
+        public static string AnnounceMSG = "Loot positions are now filled! Go grab them!";
         
         public const string red = "[color #FF0000]";
         public const string yellow = "[color yellow]";
@@ -63,6 +64,7 @@ namespace LootSpawner
                 Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
                 Settings.AddSetting("Settings", "Announce", "false");
                 Settings.AddSetting("Settings", "Time", "20");
+                Settings.AddSetting("Settings", "AnnounceMSG", "Loot positions are now filled! Go grab them!");
                 Settings.Save();
             }
             else
@@ -243,7 +245,7 @@ namespace LootSpawner
 
             if (Announce)
             {
-                Fougerite.Server.GetServer().Broadcast(orange + " Loot positions are now filled! Go grab them!");
+                Fougerite.Server.GetServer().Broadcast(orange + AnnounceMSG);
             }
             player.Message("Loot positions are now filled!");
         }
@@ -279,6 +281,7 @@ namespace LootSpawner
                 {
                     LootPositions.Add(plloc, (LootType) type);
                     Settings.AddSetting("Positions", plloc.ToString(), type.ToString());
+                    Settings.AddSetting("Settings", "AnnounceMSG", "Loot positions are now filled! Go grab them!");
                     Settings.Save();
                     player.Message("Successfully added spawnpoint for: " + GetPrefab(type));
                     return true;
@@ -348,6 +351,7 @@ namespace LootSpawner
             {
                 Time = int.Parse(Settings.GetSetting("Settings", "Time"));
                 Announce = Settings.GetBoolSetting("Settings", "Announce");
+                AnnounceMSG = Settings.GetSetting("Settings", "AnnounceMSG");
             }
             catch (Exception ex)
             {

@@ -35,7 +35,7 @@ namespace LootSpawner
             }
             if (LootSpawner.Announce)
             {
-                Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + " Loot positions are now filled! Go grab them!");
+                Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + LootSpawner.AnnounceMSG);
             }
             yield return new WaitForSeconds(LootSpawner.Time * 60); // 20mins * 60 = 1800
             StartCoroutine(LoadupLoot());
