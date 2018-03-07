@@ -178,24 +178,45 @@ namespace LootSpawner
             {
                 string msg = msgc.MessageByClient;
                 string[] split = msg.Split('-');
-                if (split[0] == "IsAdmin")
+                switch (split[0])
                 {
-                    msgc.ReturnMessage = user.Player.Admin ? "yes" : "no";
-                }
-                else if (split[0] == "spawn")
-                {
-                    bool b = AddSpawnPoint(user.Player, split[1]);
-                    msgc.ReturnMessage = b ? "yes" : "no";
-                }
-                else if (split[0] == "forcespawn")
-                {
-                    SpawnLoots(user.Player);
-                    msgc.ReturnMessage = "done";
-                }
-                else if (split[0] == "forcespawn")
-                {
-                    ClearLoot(user.Player);
-                    msgc.ReturnMessage = "done";
+                    case "IsAdmin":
+                        msgc.ReturnMessage = user.Player.Admin ? "yes" : "no";
+                        break;
+                    case "spawn":
+                        bool b = AddSpawnPoint(user.Player, split[1]);
+                        msgc.ReturnMessage = b ? "yes" : "no";
+                        break;
+                    case "forcespawn":
+                        SpawnLoots(user.Player);
+                        msgc.ReturnMessage = "done";
+                        break;
+                    case "clearspawn":
+                        ClearLoot(user.Player);
+                        msgc.ReturnMessage = "done";
+                        break;
+                    case "starttimer":
+                        if (!LootClass.IsRunning)
+                        {
+                            LootClass.StartC();
+                            msgc.ReturnMessage = "yes";
+                        }
+                        else
+                        {
+                            msgc.ReturnMessage = "no";
+                        }
+                        break;
+                    case "stoptimer":
+                        if (LootClass.IsRunning)
+                        {
+                            LootClass.StopC();
+                            msgc.ReturnMessage = "yes";
+                        }
+                        else
+                        {
+                            msgc.ReturnMessage = "no";
+                        }
+                        break;
                 }
             }
         }

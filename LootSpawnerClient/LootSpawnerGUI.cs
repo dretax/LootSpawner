@@ -12,13 +12,13 @@ namespace LootSpawnerClient
         public int widthbutonfileA;
         public int widthbutonfileB;
 
-        public void Update()
+        public void Start()
         {
             widthbox = Screen.width;
             widthbutonfileA = Screen.width + 10;
             widthbutonfileB = Screen.width + 90;
-
         }
+        
         public void OnGUI()
         {
             if (LootSpawnerClient.Enabled)
@@ -92,12 +92,28 @@ namespace LootSpawnerClient
 
                 if (GUI.Button(new Rect(widthbutonfileB, 30, 80, 20), "Start Timer"))
                 {
-                    //StartCoroutine method in server side
+                    string msg = LootSpawnerClient.Instance.SendMessageToServer("starttimer-");
+                    if (msg == "yes")
+                    {
+                        Rust.Notice.Inventory("", "Timer Started.");   
+                    }
+                    else
+                    {
+                        Rust.Notice.Inventory("", "Failed to Start Timer.");
+                    }
                 }
 
                 if (GUI.Button(new Rect(widthbutonfileB, 50, 80, 20), "Stop Timer"))
                 {
-                    //StopCoroutine method in server side
+                    string msg = LootSpawnerClient.Instance.SendMessageToServer("stoptimer-");
+                    if (msg == "yes")
+                    {
+                        Rust.Notice.Inventory("", "Timer Stopped.");   
+                    }
+                    else
+                    {
+                        Rust.Notice.Inventory("", "Failed to Stop Timer.");
+                    }
                 }
 
                 if (GUI.Button(new Rect(widthbutonfileB, 70, 80, 20), "ClearBoxes"))

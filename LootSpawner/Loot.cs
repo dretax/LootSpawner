@@ -11,9 +11,11 @@ namespace LootSpawner
 {
     public class Loot : MonoBehaviour
     {
+		internal bool IsRunning = false;
+		
         void Start()
         {
-            StartCoroutine(LoadupLoot());
+            StartC();
         }
         
         // Based on Salva's idea.
@@ -38,7 +40,19 @@ namespace LootSpawner
                 Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + LootSpawner.AnnounceMSG);
             }
             yield return new WaitForSeconds(LootSpawner.Time * 60); // 20mins * 60 = 1800
-            StartCoroutine(LoadupLoot());
+            StartC();
         }
+
+        public void StopC()
+        {
+			IsRunning = false;
+            StopCoroutine(LoadupLoot());
+        }
+		
+		public void StartC() 
+		{
+			IsRunning = true;
+			StartCoroutine(LoadupLoot());
+		}
     }
 }
