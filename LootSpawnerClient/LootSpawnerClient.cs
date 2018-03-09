@@ -11,7 +11,7 @@ namespace LootSpawnerClient
         public GameObject go;
         public static LootSpawnerClient Instance;
         internal static bool Enabled = false;
-        internal bool Authorized = false;
+        internal static bool Authorized = false;
         
         public override string Name
         {

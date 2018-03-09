@@ -14,14 +14,14 @@ namespace LootSpawnerClient
 
         public void Start()
         {
-            widthbox = Screen.width;
-            widthbutonfileA = Screen.width + 10;
-            widthbutonfileB = Screen.width + 90;
+            widthbox = Screen.width / 2;
+            widthbutonfileA = (Screen.width + 10) / 2;
+            widthbutonfileB = (Screen.width + 180) / 2;
         }
         
         public void OnGUI()
         {
-            if (LootSpawnerClient.Enabled)
+            if (LootSpawnerClient.Authorized && LootSpawnerClient.Enabled)
             {
                 GUI.Box(new Rect(widthbox, 0, 170, 200), "Loot Spawn Menu");
 
