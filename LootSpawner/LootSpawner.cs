@@ -183,6 +183,10 @@ namespace LootSpawner
                     case "IsAdmin":
                         msgc.ReturnMessage = user.Player.Admin ? "yes" : "no";
                         break;
+                    case "direct":
+                        DirectSpawn(user.Player, split[1]);
+                        msgc.ReturnMessage = "done";
+                        break;
                     case "spawn":
                         bool b = AddSpawnPoint(user.Player, split[1]);
                         msgc.ReturnMessage = b ? "yes" : "no";
@@ -252,6 +256,10 @@ namespace LootSpawner
 
         public void SpawnLoots(Fougerite.Player player)
         {
+
+            var x = new Loot();
+            x.SpawnLootsMono();
+            /*
             foreach (var x in LootSpawner.LootPositions.Keys)
             {
                 var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
@@ -269,6 +277,9 @@ namespace LootSpawner
                 Fougerite.Server.GetServer().Broadcast(orange + AnnounceMSG);
             }
             player.Message("Loot positions are now filled!");
+             * */
+
+
         }
 
         public bool AddSpawnPoint(Fougerite.Player player, string data)
@@ -310,6 +321,16 @@ namespace LootSpawner
                 player.Message("You need to be 2.5m away atleast from an existing spawnpoint!");
             }
             return false;
+        }
+
+        public void DirectSpawn(Fougerite.Player player, string data)
+        {
+            Vector3 plloc = player.Location;
+            int type = 5;
+            int.TryParse(data, out type);
+            string name = GetPrefab(type);
+            World.GetWorld().Spawn(GetPrefab(type),new Vector3(plloc.x,plloc.y -1.6f,plloc.z));
+            player.Message("Successfully Spawned: " + GetPrefab(type));
         }
 
         public static string GetPrefab(int num)
