@@ -64,6 +64,7 @@ namespace LootSpawner
         {
             StartCoroutine(SpawnLootsMonoIE());
         }
+		
         IEnumerator SpawnLootsMonoIE()
         {
             foreach (var xx in LootSpawner.LootPositions.Keys)

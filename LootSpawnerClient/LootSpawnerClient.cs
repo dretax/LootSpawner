@@ -20,7 +20,7 @@ namespace LootSpawnerClient
 
         public override string Author
         {
-            get { return "DreTaX & Salva"; }
+            get { return "Salva & DreTaX"; }
         }
 
         public override Version Version
@@ -60,14 +60,8 @@ namespace LootSpawnerClient
                 if (msg == "loot.spawn")
                 {
                     Enabled = !Enabled;
-                    if (Enabled)
-                    {
-                        Rust.Notice.Inventory("", "Enabled Lootspawn editor! (num1 - num5)");
-                    }
-                    else
-                    {
-                        Rust.Notice.Inventory("", "Disabled Lootspawn editor!");
-                    }
+                    Rust.Notice.Inventory("",
+                        Enabled ? "Enabled Lootspawn editor! (num1 - num5)" : "Disabled Lootspawn editor!");
                 }
             }
         }

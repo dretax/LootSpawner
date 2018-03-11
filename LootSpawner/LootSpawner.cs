@@ -30,6 +30,7 @@ namespace LootSpawner
         public static Random Randomizer;
         public static bool Announce = false;
         public static string AnnounceMSG = "Loot positions are now filled! Go grab them!";
+        public static float Distance = 2.5f;
         
         public const string red = "[color #FF0000]";
         public const string yellow = "[color yellow]";
@@ -53,25 +54,13 @@ namespace LootSpawner
 
         public override Version Version
         {
-            get { return new Version("1.0"); }
+            get { return new Version("1.1"); }
         }
 
         public override void Initialize()
         {
-            if (!File.Exists(Path.Combine(ModuleFolder, "Settings.ini")))
-            {
-                File.Create(Path.Combine(ModuleFolder, "Settings.ini")).Dispose();
-                Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
-                Settings.AddSetting("Settings", "Announce", "false");
-                Settings.AddSetting("Settings", "Time", "20");
-                Settings.AddSetting("Settings", "AnnounceMSG", "Loot positions are now filled! Go grab them!");
-                Settings.Save();
-            }
-            else
-            {
-                Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
-            }
-
+            ReloadConfig();
+            Randomizer = new Random();
             foreach (var x in Settings.EnumSection("Positions"))
             {
                 try
@@ -89,8 +78,6 @@ namespace LootSpawner
             Hooks.OnServerLoaded += OnServerLoaded;
             Hooks.OnModulesLoaded += OnModulesLoaded;
             Hooks.OnCommand += OnCommand;
-            ReloadConfig();
-            Randomizer = new Random();
         }
 
         public override void DeInitialize()
@@ -106,55 +93,53 @@ namespace LootSpawner
 
         public void OnCommand(Fougerite.Player player, string cmd, string[] args)
         {
-            if (cmd == "addloot")
+            switch (cmd)
             {
-                if (player.Admin)
-                {
-                    if (args.Length == 0 || args.Length > 1)
+                case "addloot":
+                    if (player.Admin)
                     {
-                        player.Message("Usage: /addloot 1-5");
-                        player.Message("AmmoLootBox, MedicalLootBox, BoxLoot, WeaponLootBox, Random");
-                        return;
+                        if (args.Length == 0 || args.Length > 1)
+                        {
+                            player.Message("Usage: /addloot 1-5");
+                            player.Message("AmmoLootBox, MedicalLootBox, BoxLoot, WeaponLootBox, Random");
+                            return;
+                        }
+                        AddSpawnPoint(player, args[0]);
                     }
-                    AddSpawnPoint(player, args[0]);
-                }
-            }
-            else if (cmd == "clearloot")
-            {
-                if (player.Admin)
-                {
-                    ClearLoot(player);
-                }
-            }
-            else if (cmd == "reloadloot")
-            {
-                if (player.Admin)
-                {
-                    LootPositions.Clear();
-                    Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
-                    ReloadConfig();
-                    foreach (var x in Settings.EnumSection("Positions"))
+                    break;
+                case "clearloot":
+                    if (player.Admin)
                     {
-                        try
+                        ClearLoot(player);
+                    }
+                    break;
+                case "reloadloot":
+                    if (player.Admin)
+                    {
+                        LootPositions.Clear();
+                        ReloadConfig();
+                        foreach (var x in Settings.EnumSection("Positions"))
                         {
-                            int loottype = int.Parse(x);
-                            string data = Settings.GetSetting("Positions", x);
-                            Vector3 v = Util.GetUtil().ConvertStringToVector3(data);
-                            LootPositions[v] = (LootType) loottype;
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.LogError("[LootSpawner] Failed to read position: " + ex);
+                            try
+                            {
+                                int loottype = int.Parse(x);
+                                string data = Settings.GetSetting("Positions", x);
+                                Vector3 v = Util.GetUtil().ConvertStringToVector3(data);
+                                LootPositions[v] = (LootType) loottype;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("[LootSpawner] Failed to read position: " + ex);
+                            }
                         }
                     }
-                }
-            }
-            else if (cmd == "forcespawnloot")
-            {
-                if (player.Admin)
-                {
-                    SpawnLoots(player);
-                }
+                    break;
+                case "forcespawnloot":
+                    if (player.Admin)
+                    {
+                        SpawnLoots(player);
+                    }
+                    break;
             }
         }
 
@@ -220,29 +205,7 @@ namespace LootSpawner
                         {
                             msgc.ReturnMessage = "no";
                         }
-                        break;/*
-                    case "starttimer":
-                        if (!LootClass.IsRunning)
-                        {
-                            LootClass.StartC();
-                            msgc.ReturnMessage = "yes";
-                        }
-                        else
-                        {
-                            msgc.ReturnMessage = "no";
-                        }
                         break;
-                    case "stoptimer":
-                        if (LootClass.IsRunning)
-                        {
-                            LootClass.StopC();
-                            msgc.ReturnMessage = "yes";
-                        }
-                        else
-                        {
-                            msgc.ReturnMessage = "no";
-                        }
-                        break;*/
                 }
             }
         }
@@ -312,7 +275,6 @@ namespace LootSpawner
                 {
                     LootPositions.Add(plloc, (LootType) type);
                     Settings.AddSetting("Positions", plloc.ToString(), type.ToString());
-                    Settings.AddSetting("Settings", "AnnounceMSG", "Loot positions are now filled! Go grab them!");
                     Settings.Save();
                     player.Message("Successfully added spawnpoint for: " + GetPrefab(type));
                     return true;
@@ -328,51 +290,43 @@ namespace LootSpawner
             int type = 5;
             int.TryParse(data, out type);
             string name = GetPrefab(type);
-            World.GetWorld().Spawn(GetPrefab(type),new Vector3(plloc.x,plloc.y -1.6f,plloc.z));
-            player.Message("Successfully Spawned: " + GetPrefab(type));
+            World.GetWorld().Spawn(name, new Vector3(plloc.x, plloc.y - 1.6f, plloc.z));
+            player.Message("Successfully Spawned: " + name);
         }
 
         public static string GetPrefab(int num)
         {
             LootType type = (LootType) num;
-            if (type == LootType.BoxLoot)
+            switch (type)
             {
-                return "BoxLoot";
+                case LootType.BoxLoot:
+                    return "BoxLoot";
+                case LootType.AmmoLootBox:
+                    return "AmmoLootBox";
+                case LootType.MedicalLootBox:
+                    return "MedicalLootBox";
+                case LootType.WeaponLootBox:
+                    return "WeaponLootBox";
             }
-            if (type == LootType.AmmoLootBox)
-            {
-                return "AmmoLootBox";
-            }
-            if (type == LootType.MedicalLootBox)
-            {
-                return "MedicalLootBox";
-            }
-            if (type == LootType.WeaponLootBox)
-            {
-                return "WeaponLootBox";
-            }
+
             int i = Randomizer.Next(1, 5);
             return GetPrefab(i);
         }
 
         public static string GetPrefab(LootType type)
         {
-            if (type == LootType.BoxLoot)
+            switch (type)
             {
-                return "BoxLoot";
+                case LootType.BoxLoot:
+                    return "BoxLoot";
+                case LootType.AmmoLootBox:
+                    return "AmmoLootBox";
+                case LootType.MedicalLootBox:
+                    return "MedicalLootBox";
+                case LootType.WeaponLootBox:
+                    return "WeaponLootBox";
             }
-            if (type == LootType.AmmoLootBox)
-            {
-                return "AmmoLootBox";
-            }
-            if (type == LootType.MedicalLootBox)
-            {
-                return "MedicalLootBox";
-            }
-            if (type == LootType.WeaponLootBox)
-            {
-                return "WeaponLootBox";
-            }
+
             int i = Randomizer.Next(1, 5);
             return GetPrefab(i);
         }
@@ -385,6 +339,7 @@ namespace LootSpawner
                 Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
                 Settings.AddSetting("Settings", "Time", "20");
                 Settings.AddSetting("Settings", "Announce", "false");
+                Settings.AddSetting("Settings", "Distance", "2.5");
                 Settings.Save();
             }
             Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
@@ -393,6 +348,7 @@ namespace LootSpawner
                 Time = int.Parse(Settings.GetSetting("Settings", "Time"));
                 Announce = Settings.GetBoolSetting("Settings", "Announce");
                 AnnounceMSG = Settings.GetSetting("Settings", "AnnounceMSG");
+                Distance = float.Parse(Settings.GetSetting("Settings", "Distance"));
             }
             catch (Exception ex)
             {
