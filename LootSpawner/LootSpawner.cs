@@ -200,6 +200,28 @@ namespace LootSpawner
                         msgc.ReturnMessage = "done";
                         break;
                     case "starttimer":
+                        if (!LootClass.LoadupLootEnabled)
+                        {
+                            LootClass.LoadupLootEnabled = true;
+                            msgc.ReturnMessage = "yes";
+                        }
+                        else
+                        {
+                            msgc.ReturnMessage = "no";
+                        }
+                        break;
+                    case "stoptimer":
+                        if (LootClass.LoadupLootEnabled)
+                        {
+                            LootClass.LoadupLootEnabled = false;
+                            msgc.ReturnMessage = "yes";
+                        }
+                        else
+                        {
+                            msgc.ReturnMessage = "no";
+                        }
+                        break;/*
+                    case "starttimer":
                         if (!LootClass.IsRunning)
                         {
                             LootClass.StartC();
@@ -220,7 +242,7 @@ namespace LootSpawner
                         {
                             msgc.ReturnMessage = "no";
                         }
-                        break;
+                        break;*/
                 }
             }
         }
@@ -256,30 +278,7 @@ namespace LootSpawner
 
         public void SpawnLoots(Fougerite.Player player)
         {
-
-            var x = new Loot();
-            x.SpawnLootsMono();
-            /*
-            foreach (var x in LootSpawner.LootPositions.Keys)
-            {
-                var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
-                if (obj != null && obj.Object is LootableObject)
-                {
-                    Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
-                }
-                var tempvector = x;
-                tempvector.y = tempvector.y - 1.6f;
-                World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
-            }
-
-            if (Announce)
-            {
-                Fougerite.Server.GetServer().Broadcast(orange + AnnounceMSG);
-            }
-            player.Message("Loot positions are now filled!");
-             * */
-
-
+            LootClass.SpawnLootsMono();
         }
 
         public bool AddSpawnPoint(Fougerite.Player player, string data)
