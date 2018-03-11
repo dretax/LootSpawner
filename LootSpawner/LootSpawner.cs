@@ -271,7 +271,7 @@ namespace LootSpawner
             }
             if (Vector3.zero != findclosestpos) // If we found the closest position.
             {
-                if (Vector3.Distance(plloc, findclosestpos) > 2.5f)
+                if (Vector3.Distance(plloc, findclosestpos) > Distance)
                 {
                     LootPositions.Add(plloc, (LootType) type);
                     Settings.AddSetting("Positions", plloc.ToString(), type.ToString());
@@ -279,7 +279,7 @@ namespace LootSpawner
                     player.Message("Successfully added spawnpoint for: " + GetPrefab(type));
                     return true;
                 }
-                player.Message("You need to be 2.5m away atleast from an existing spawnpoint!");
+                player.Message("You need to be " + Distance + "m away atleast from an existing spawnpoint!");
             }
             return false;
         }
