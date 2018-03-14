@@ -28,14 +28,7 @@ namespace LootSpawnerClient
                 //mostrar boton de menu
                 if (GUI.Button(new Rect(Screen.width - 80, 50, 80, 20), "Loot Menu"))
                 {
-                    if (LootSpawnerClient.Enabled)
-                    {
-                        LootSpawnerClient.Enabled = false;
-                    }
-                    else
-                    {
-                        LootSpawnerClient.Enabled = true;
-                    }
+                    LootSpawnerClient.Enabled = !LootSpawnerClient.Enabled;
                 }
             }
             
