@@ -41,10 +41,9 @@ namespace LootSpawner
             if (LootSpawner.Announce && LoadupLootEnabled)
             {
                 Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + LootSpawner.AnnounceMSG);
-                yield return new WaitForSeconds(LootSpawner.Time * 60); // 20mins * 60 = 1800
             }
             //StartC();
-            yield return new WaitForSeconds(10);
+            yield return new WaitForSeconds(LootSpawner.Time * 60);
             StartCoroutine(LoadupLoot());
         }
         /*
