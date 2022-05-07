@@ -11,12 +11,10 @@ namespace LootSpawner
 {
     public class Loot : MonoBehaviour
     {
-        //internal bool IsRunning = false;
         internal bool LoadupLootEnabled = true;
 
         void Start()
         {
-            //StartC();
             StartCoroutine(LoadupLoot());
         }
 
@@ -28,36 +26,27 @@ namespace LootSpawner
                 if (LoadupLootEnabled)
                 {
                     var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
-                    if (obj != null && obj.Object is LootableObject)
+                    if (obj != null && obj.Object is LootableObject lootableObject)
                     {
-                        Util.GetUtil().DestroyObject(((LootableObject)obj.Object).gameObject);
+                        Util.GetUtil().DestroyObject(lootableObject.gameObject);
                     }
+                    
                     yield return new WaitForSeconds(1);
-                    var tempvector = x;
-                    tempvector.y = tempvector.y - 1.6f;
+                    
+                    Vector3 tempvector = x;
+                    tempvector.y -= 1.6f;
                     World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
                 }
             }
+            
             if (LootSpawner.Announce && LoadupLootEnabled)
             {
                 Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + LootSpawner.AnnounceMSG);
             }
-            //StartC();
+            
             yield return new WaitForSeconds(LootSpawner.Time * 60);
             StartCoroutine(LoadupLoot());
         }
-        /*
-        public void StopC()
-        {
-            IsRunning = false;
-            StopCoroutine(LoadupLoot());
-        }
-
-        public void StartC()
-        {
-            IsRunning = true;
-            StartCoroutine(LoadupLoot());
-        }*/
 
         public void SpawnLootsMono()
         {
@@ -69,18 +58,20 @@ namespace LootSpawner
             foreach (var xx in LootSpawner.LootPositions.Keys)
             {
                 var obj = Util.GetUtil().FindClosestEntity(xx, 1.5f);
-                if (obj != null && obj.Object is LootableObject)
+                if (obj != null && obj.Object is LootableObject lootableObject)
                 {
-                    Util.GetUtil().DestroyObject(((LootableObject)obj.Object).gameObject);
+                    Util.GetUtil().DestroyObject(lootableObject.gameObject);
                 }
             }
-            foreach (var x in LootSpawner.LootPositions.Keys)
+            
+            foreach (Vector3 x in LootSpawner.LootPositions.Keys)
             {
                 yield return new WaitForSeconds(1);
-                var tempvector = x;
-                tempvector.y = tempvector.y - 1.6f;
+                Vector3 tempvector = x;
+                tempvector.y -= 1.6f;
                 World.GetWorld().Spawn(LootSpawner.GetPrefab(LootSpawner.LootPositions[x]), tempvector);
             }
+            
             if (LootSpawner.Announce)
             {
                 Fougerite.Server.GetServer().Broadcast(LootSpawner.orange + LootSpawner.AnnounceMSG);

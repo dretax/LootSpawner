@@ -32,24 +32,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\RustBuster2016\RustBuster2016\bin\Release\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.ID, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\Facepunch.ID.dll</HintPath>
+    <Reference Include="Facepunch.ID">
+      <HintPath>..\..\RustBuster2016\RustBuster2016\bin\Release\Facepunch.ID.dll</HintPath>
     </Reference>
-    <Reference Include="RustBuster2016, Version=1.0.0.0, Culture=neutral">
-      <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\RustBuster2016.dll</HintPath>
+    <Reference Include="RustBuster2016">
+      <HintPath>..\..\RustBuster2016\RustBuster2016\bin\Release\RustBuster2016.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="uLink, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\uLink.dll</HintPath>
+    <Reference Include="uLink">
+      <HintPath>..\..\RustBuster2016\RustBuster2016\bin\Release\uLink.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>F:\Program Files (x86)\Rust_RustBuster2016\rust_Data\Managed\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\RustBuster2016\RustBuster2016\bin\Release\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Timers;
 using Fougerite;
+using Fougerite.Concurrent;
+using Fougerite.Permissions;
+using Fougerite.PluginLoaders;
 using RustBuster2016Server;
 using UnityEngine;
 using Random = System.Random;
@@ -117,7 +120,13 @@ namespace LootSpawner
                     if (player.Admin)
                     {
                         LootPositions.Clear();
-                        ReloadConfig();
+                        bool ret = ReloadConfig();
+                        if (!ret)
+                        {
+                            player.Message("Failed to reload the loot, something wrong with the config!");
+                            return;
+                        }
+                        
                         foreach (var x in Settings.EnumSection("Positions"))
                         {
                             try
@@ -145,9 +154,9 @@ namespace LootSpawner
 
         public void OnModulesLoaded()
         {
-            foreach (var x in Fougerite.ModuleManager.Modules)
+            foreach (BasePlugin x in PluginLoader.GetInstance().Plugins.Values)
             {
-                if (!x.Plugin.Name.ToLower().Contains("rustbuster")) continue;
+                if (!x.Name.ToLower().Contains("rustbuster")) continue;
                 RustBusterSupport = true;
                 break;
             }
@@ -166,7 +175,8 @@ namespace LootSpawner
                 switch (split[0])
                 {
                     case "IsAdmin":
-                        msgc.ReturnMessage = user.Player.Admin ? "yes" : "no";
+                        msgc.ReturnMessage = (user.Player.Admin || PermissionSystem.GetPermissionSystem().PlayerHasPermission(user.Player, "lootspawner.spawn"))
+                            ? "yes" : "no";
                         break;
                     case "direct":
                         DirectSpawn(user.Player, split[1]);
@@ -225,9 +235,9 @@ namespace LootSpawner
                 try
                 {
                     var obj = Util.GetUtil().FindClosestEntity(x, 1.5f);
-                    if (obj != null && obj.Object is LootableObject)
+                    if (obj != null && obj.Object is LootableObject lootableObject)
                     {
-                        Util.GetUtil().DestroyObject(((LootableObject) obj.Object).gameObject);
+                        Util.GetUtil().DestroyObject(lootableObject.gameObject);
                         num++;
                     }
                 }
@@ -342,9 +352,10 @@ namespace LootSpawner
                 Settings.AddSetting("Settings", "Distance", "2.5");
                 Settings.Save();
             }
-            Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
+            
             try
             {
+                Settings = new IniParser(Path.Combine(ModuleFolder, "Settings.ini"));
                 Time = int.Parse(Settings.GetSetting("Settings", "Time"));
                 Announce = Settings.GetBoolSetting("Settings", "Announce");
                 AnnounceMSG = Settings.GetSetting("Settings", "AnnounceMSG");
@@ -355,6 +366,7 @@ namespace LootSpawner
                 Fougerite.Logger.LogError("[LootSpawner] Failed to read config, possible wrong value somewhere! Ex: " + ex);
                 return false;
             }
+            
             return true;
         }
     }

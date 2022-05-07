@@ -11,6 +11,7 @@
     <AssemblyName>LootSpawner</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,30 +33,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\Assembly-CSharp-C.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\Fougerite\References\PatchedRustDlls\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.ID, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\Facepunch.ID.dll</HintPath>
+    <Reference Include="Facepunch.ID">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\bin\Facepunch.ID.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.MeshBatch, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\Facepunch.MeshBatch.dll</HintPath>
+    <Reference Include="Facepunch.MeshBatch">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\bin\Facepunch.MeshBatch.dll</HintPath>
     </Reference>
-    <Reference Include="Fougerite, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\Fougerite.dll</HintPath>
+    <Reference Include="Fougerite">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\bin\Fougerite.dll</HintPath>
     </Reference>
     <Reference Include="RustBuster2016Server">
-      <HintPath>C:\Users\DreTaX\Documents\Visual Studio 2015\Projects\RustBuster2016\RustBuster2016Server\bin\Release\RustBuster2016ServerRelease\Modules\RustBuster2016Server\RustBuster2016Server.dll</HintPath>
+      <HintPath>..\..\RustBuster2016\RustBuster2016Server\bin\Release\RustBuster2016ServerRelease\Modules\RustBuster2016Server\RustBuster2016Server.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="uLink, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\uLink.dll</HintPath>
+    <Reference Include="uLink">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\Fougerite\References\PatchedRustDlls\uLink.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\Projects\FougeriteProject\bin\UnityEngine-.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\Visual Studio 2013\FougeriteProject\bin\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
