@@ -99,7 +99,7 @@ namespace LootSpawner
             switch (cmd)
             {
                 case "addloot":
-                    if (player.Admin)
+                    if (player.Admin || PermissionSystem.GetPermissionSystem().PlayerHasPermission(player, "lootspawner.addloot"))
                     {
                         if (args.Length == 0 || args.Length > 1)
                         {
@@ -111,13 +111,13 @@ namespace LootSpawner
                     }
                     break;
                 case "clearloot":
-                    if (player.Admin)
+                    if (player.Admin || PermissionSystem.GetPermissionSystem().PlayerHasPermission(player, "lootspawner.clearloot"))
                     {
                         ClearLoot(player);
                     }
                     break;
                 case "reloadloot":
-                    if (player.Admin)
+                    if (player.Admin || PermissionSystem.GetPermissionSystem().PlayerHasPermission(player, "lootspawner.reloadloot"))
                     {
                         LootPositions.Clear();
                         bool ret = ReloadConfig();
@@ -144,7 +144,7 @@ namespace LootSpawner
                     }
                     break;
                 case "forcespawnloot":
-                    if (player.Admin)
+                    if (player.Admin || PermissionSystem.GetPermissionSystem().PlayerHasPermission(player, "lootspawner.forcespawnloot"))
                     {
                         SpawnLoots(player);
                     }
